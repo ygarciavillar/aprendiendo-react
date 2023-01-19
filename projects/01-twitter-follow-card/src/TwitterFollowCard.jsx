@@ -11,7 +11,6 @@ export function TwitterFollowCard ({userName, name, initialIsFollowing}) {
         setIsFollowing(!isFollowing);
     }
 
-  
     return (
         <article className='tw-followCard'>
             <header className='tw-followCard-header'>
