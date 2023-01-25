@@ -6,56 +6,68 @@ import { TURNS } from './constants'
 import { checkWinner, checkEndGame } from './logic/board'
 import confetti from 'canvas-confetti'
 
-function App () {
-  const [board, setBoard] = useState(
+function Game () {
+  const [history, setHistory] = useState(
     window.localStorage.getItem('board')
-      ? JSON.parse(window.localStorage.getItem('board'))
-      : Array(9).fill(null))
+      ? JSON.parse([window.localStorage.getItem('board')])
+      : [Array(9).fill(null)])
 
   const [actualTurn, setActualTurn] = useState(
     window.localStorage.getItem('turn') || TURNS.X
   )
 
+  const currentBoard = history[history.length - 1]
+
   const [winner, setWinner] = useState(null)
 
-  const updateBoard = function (index) {
-    if (board[index]) return
-
-    board[index] = actualTurn
-    const updateBoard = [...board]
-    const newTurn = actualTurn === TURNS.X ? TURNS.O : TURNS.X
-    setActualTurn(newTurn)
-    setBoard(updateBoard)
-
-    window.localStorage.setItem('board', JSON.stringify(updateBoard))
-    window.localStorage.setItem('turn', newTurn)
-
-    const newWinner = checkWinner(updateBoard)
+  const handlePlay = function (board) {
+    const newWinner = checkWinner(board)
     if (newWinner) {
       confetti()
       setWinner(newWinner)
       return
     }
-
-    if (checkEndGame(updateBoard)) {
+    if (checkEndGame(board)) {
       setWinner(false)
+      return
     }
+    const newTurn = actualTurn === TURNS.X ? TURNS.O : TURNS.X
+    const currentBoard = [...history, board]
+    setActualTurn(newTurn)
+    setHistory(currentBoard)
+
+    window.localStorage.setItem('board', JSON.stringify(currentBoard))
+    window.localStorage.setItem('turn', newTurn)
   }
 
   const resetGame = () => {
-    setBoard(Array(9).fill(null))
+    setHistory([Array(9).fill(null)])
     setActualTurn(TURNS.X)
     setWinner(null)
     window.localStorage.removeItem('board')
     window.localStorage.removeItem('turn')
   }
 
+  const moves = history.map((board, index) => {
+    let description
+    if (index > 0) {
+      description = 'Go to move#' + description
+    } else {
+      description = 'Go to game start'
+    }
+    return (
+      <li key={index}>
+        <button>{description}</button>
+      </li>
+    )
+  })
+
   return (
     <main className='board'>
       <h1>Tic tac toe</h1>
       <button onClick={resetGame} className='button'>Reset Game</button>
       <section className='game'>
-        <Board board={board} updateBoard={updateBoard} />
+        <Board actualTurn={actualTurn} board={currentBoard} onPlay={handlePlay} />
       </section>
 
       <section className='turn'>
@@ -65,9 +77,12 @@ function App () {
 
       <ModalResultGame winner={winner} resetGame={resetGame} />
 
+      <div className='game-info'>
+        <ol>{moves}</ol>
+      </div>
     </main>
 
   )
 }
 
-export default App
+export default Game
