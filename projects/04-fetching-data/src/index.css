@@ -1,0 +1,18 @@
+
+header {
+    display: flex;
+}
+
+header > * {
+  flex: 1;
+}
+
+button {
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+button.isActive{
+    background-color: black;
+    color: white;
+}
