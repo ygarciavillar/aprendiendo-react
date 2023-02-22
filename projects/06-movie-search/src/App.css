@@ -1,0 +1,51 @@
+.App{
+  display: fex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+header{
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+header h1 {
+  text-align: center;
+}
+
+header form{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 52rem;
+  width: 100%;
+}
+
+li {
+ list-style: none;
+ padding: 0;
+ margin: 0;
+}
+
+.movieList{
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.movieCard{
+  padding-bottom: 1rem;
+}
+
+
+.cardDescription h3, p  {
+  margin: 0;
+}
